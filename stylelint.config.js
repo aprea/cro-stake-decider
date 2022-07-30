@@ -1,6 +1,6 @@
 module.exports = {
 	extends: [
-		'stylelint-config-wordpress/scss',
+		'@wordpress/stylelint-config/scss',
 	],
 	rules: {
 		'comment-empty-line-before': [
