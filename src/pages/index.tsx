@@ -571,7 +571,7 @@ const Home: NextPage = () => {
 						<Form.Label>Your monthly spend</Form.Label>
 						<InputGroup>
 							<Form.Control onChange={ handleUserMonthlySpendChange } pattern="\d+" required size="lg" type="number" value={ userMonthlySpend } />
-							<Form.Select aria-label="Select your local currency" className="user-currency" onChange={ ( e: React.FormEvent<HTMLSelectElement> ) => setUserCurrency( e.currentTarget.value ) } value={ userCurrency }>
+							<Form.Select aria-label="Select your local currency" className="user-currency" onChange={ ( e: React.FormEvent<HTMLSelectElement> ) => setUserCurrency( e.currentTarget.value as UserCurrency ) } value={ userCurrency }>
 								{ currencyCodes.map( currency => (
 									<option key={ currency } value={ currency }>{ currency }</option>
 								) ) }
