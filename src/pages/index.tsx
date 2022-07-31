@@ -164,6 +164,7 @@ type ResultsProps = {
 	userCardStake: UserCardStake;
 	userCurrency: UserCurrency;
 	userCurrencyConversionRate: UserCurrencyConversion;
+	userLocale: string;
 	userMonthlySpend: UserMonthlySpend;
 	userPerks: UserPerks;
 };
@@ -176,19 +177,13 @@ const Results: React.FC<ResultsProps> = memo( ( {
 	userCardStake,
 	userCurrency,
 	userCurrencyConversionRate,
+	userLocale,
 	userMonthlySpend,
 	userPerks,
 } ) => {
-	const [ userLocale, setUserLocale ] = useState( 'en-US' );
-
 	cdcOrgStakingAPR = cdcOrgStakingAPR || 0;
 	croUsd = croUsd || 0;
 	userCurrencyConversionRate = userCurrencyConversionRate || 0;
-
-	useEffect( () => {
-		const locale = navigator.language || 'en-US';
-		setUserLocale( locale );
-	}, [ userLocale ] );
 
 	const userMonthlySpendUSD = ( userMonthlySpend || 0 ) * ( 1 / userCurrencyConversionRate );
 
@@ -479,11 +474,17 @@ const Home: NextPage = () => {
 	const [ isSettingsModalOpen, setIsSettingsModalOpen ] = useState( false );
 	const [ perkUSDValues, setPerkUSDValues ] = useState<Map<PerkType, number|string>>( new Map( Object.values( perks ).map( perk => [ perk.id, perk.value ] ) ) );
 	const [ userCard, setUserCard ] = useState<UserCard>( CardTier.Ruby );
-	const [ userCardStake, setUserCardStake ] = useState<UserCardStake>();
+	const [ userCardStake, setUserCardStake ] = useState<UserCardStake>( '' );
 	const [ userCurrency, setUserCurrency ] = useState<UserCurrency>( 'USD' );
 	const [ userCurrencyConversionRate, setUserCurrencyConversionRate ] = useState<UserCurrencyConversion>( 1 );
-	const [ userMonthlySpend, setUserMonthlySpend ] = useState<UserMonthlySpend>();
+	const [ userMonthlySpend, setUserMonthlySpend ] = useState<UserMonthlySpend>( '' );
 	const [ userPerks, setUserPerks ] = useState<UserPerks>( new Set() );
+	const [ userLocale, setUserLocale ] = useState( 'en-US' );
+
+	useEffect( () => {
+		const locale = navigator.language || 'en-US';
+		setUserLocale( locale );
+	}, [ userLocale ] );
 
 	const handleUserCardStakeChange: FormControlProps['onChange'] = e => {
 		const newUserCardStake = e.currentTarget.value;
@@ -677,9 +678,15 @@ const Home: NextPage = () => {
 						</InputGroup>
 						<Form.Text className="text-muted">
 							Select your local currency, e.g. USD.
+							{ userCurrency !== 'USD' && (
+								<>
+									<br />
+									US$1 = { new Intl.NumberFormat( userLocale, { style: 'currency', currency: userCurrency, currencyDisplay: 'symbol' } ).format( Number( userCurrencyConversionRate ) ) }
+								</>
+							) }
 						</Form.Text>
 					</Form.Group>
-					<Results { ...{ userCard, userMonthlySpend, croUsd, userPerks, userCardStake, userCurrency, cdcOrgStakingAPR, userCurrencyConversionRate, perkUSDValues } } />
+					<Results { ...{ userCard, userMonthlySpend, croUsd, userPerks, userCardStake, userCurrency, cdcOrgStakingAPR, userCurrencyConversionRate, perkUSDValues, userLocale } } />
 				</Container>
 				<footer className="bg-dark text-center text-white">
 					<div>
