@@ -1,7 +1,7 @@
 import equal from 'fast-deep-equal/es6';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { memo, useEffect, useState } from 'react';
+import { ChangeEventHandler, memo, useEffect, useState } from 'react';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -147,20 +147,23 @@ const cards: Record<CardTier, Card> = Object.freeze( {
 	},
 } );
 
-type CroUSD = number;
+type CdcOrgStakingAPR = number|'';
+type CroUSD = number|'';
 type UserCard = CardTier;
 type UserCardStake = number|'';
+type UserCurrency = keyof typeof currencyConversions;
 type UserMonthlySpend = number|'';
 type UserPerks = Set<PerkType>;
-type UserCurrency = keyof typeof currencyConversions;
-type CdcOrgStakingAPR = number;
+type UserCurrencyConversion = number|'';
 
 type ResultsProps = {
 	cdcOrgStakingAPR: CdcOrgStakingAPR;
 	croUsd: CroUSD;
+	perkUSDValues: Map<PerkType, number|string>;
 	userCard: UserCard;
 	userCardStake: UserCardStake;
 	userCurrency: UserCurrency;
+	userCurrencyConversionRate: UserCurrencyConversion;
 	userMonthlySpend: UserMonthlySpend;
 	userPerks: UserPerks;
 };
@@ -168,20 +171,26 @@ type ResultsProps = {
 const Results: React.FC<ResultsProps> = memo( ( {
 	cdcOrgStakingAPR,
 	croUsd,
+	perkUSDValues,
 	userCard,
 	userCardStake,
 	userCurrency,
+	userCurrencyConversionRate,
 	userMonthlySpend,
 	userPerks,
 } ) => {
 	const [ userLocale, setUserLocale ] = useState( 'en-US' );
+
+	cdcOrgStakingAPR = cdcOrgStakingAPR || 0;
+	croUsd = croUsd || 0;
+	userCurrencyConversionRate = userCurrencyConversionRate || 0;
 
 	useEffect( () => {
 		const locale = navigator.language || 'en-US';
 		setUserLocale( locale );
 	}, [ userLocale ] );
 
-	const userMonthlySpendUSD = ( userMonthlySpend || 0 ) * ( 1 / currencyConversions[ userCurrency ] );
+	const userMonthlySpendUSD = ( userMonthlySpend || 0 ) * ( 1 / userCurrencyConversionRate );
 
 	const currencyFormatter = new Intl.NumberFormat( userLocale, { style: 'currency', currency: userCurrency, currencyDisplay: 'narrowSymbol' } );
 	const currencyFormatterWithSymbol = new Intl.NumberFormat( userLocale, { style: 'currency', currency: userCurrency, currencyDisplay: 'symbol' } );
@@ -192,7 +201,7 @@ const Results: React.FC<ResultsProps> = memo( ( {
 	const cashbackFiatPerYear = cashbackFiatPerMonth * 12;
 	const cashbackCroPerMonth = cashbackFiatPerMonth / croUsd;
 	const cashbackCroPerYear = cashbackFiatPerYear / croUsd;
-	const userPerksRebateFiatPerMonth = Array.from( userPerks ).reduce( ( acc, perk ) => acc + perks[ perk ].value, 0 );
+	const userPerksRebateFiatPerMonth = Array.from( userPerks ).reduce( ( acc, perk ) => acc + Number( perkUSDValues.get( perk ) ), 0 );
 	const userPerksRebateFiatPerYear = userPerksRebateFiatPerMonth * 12;
 	const userPerksRebateCroPerMonth = userPerksRebateFiatPerMonth / croUsd;
 	const userPerksRebateCroPerYear = userPerksRebateFiatPerYear / croUsd;
@@ -223,7 +232,7 @@ const Results: React.FC<ResultsProps> = memo( ( {
 	const stakingDifferenceFiatPerYear = Math.abs( totalCardStakeFiatPerYear - totalDefiStakeFiatPerYear );
 
 	const formatFiat = ( amount: number ) => {
-		return currencyFormatter.format( amount * currencyConversions[ userCurrency ] );
+		return currencyFormatter.format( amount * ( userCurrencyConversionRate || 0 ) );
 	};
 
 	const BestOptionBadge = () => (
@@ -245,7 +254,7 @@ const Results: React.FC<ResultsProps> = memo( ( {
 			<Table className="results-table">
 				<thead>
 					<tr>
-						<th />
+						<th>Card benefits</th>
 						<th>
 							Per Month
 							<small>{ userCurrency }</small>
@@ -390,7 +399,7 @@ const Results: React.FC<ResultsProps> = memo( ( {
 					<tr>
 						<th>
 							Crypto.org Chain Staking<br />
-							<small>{ cdcOrgStakingAPR * 100 }% APR</small>
+							<small>{ ( cdcOrgStakingAPR || 0 ) * 100 }% APR</small>
 						</th>
 						{ defiStakingRewardsCroPerYear ? (
 							<>
@@ -444,9 +453,9 @@ const Results: React.FC<ResultsProps> = memo( ( {
 				{ ( !! userCardStake && !! userMonthlySpend ) && (
 					<>
 						{ isCardStakeYieldGreaterThanDefiStakeYield ? (
-							<p>Based on the information provided above, you will earn <span className="fiat-difference">{ currencyFormatterWithSymbol.format( stakingDifferenceFiatPerYear * currencyConversions[ userCurrency ] ) }</span> more per year by keeping your <b>Crypto.com card stake</b> active compared to staking your CRO via Crypto.org chain staking.</p>
+							<p>Based on the information provided above, you will earn <span className="fiat-difference">{ currencyFormatterWithSymbol.format( stakingDifferenceFiatPerYear * userCurrencyConversionRate ) }</span> more per year by continuing your <b>Crypto.com card stake</b> compared to staking your CRO via Crypto.org chain staking.</p>
 						) : (
-							<p>Based on the information provided above, you will earn <span className="fiat-difference">{ currencyFormatterWithSymbol.format( stakingDifferenceFiatPerYear * currencyConversions[ userCurrency ] ) }</span> more per year by staking your CRO via <b>Crypto.org chain staking</b> compared to keeping your Crypto.com card stake active.</p>
+							<p>Based on the information provided above, you will earn <span className="fiat-difference">{ currencyFormatterWithSymbol.format( stakingDifferenceFiatPerYear * userCurrencyConversionRate ) }</span> more per year by staking your CRO via <b>Crypto.org chain staking</b> compared to continuing your Crypto.com card stake.</p>
 						) }
 
 						<p>See a breakdown of this calculation below.</p>
@@ -465,15 +474,16 @@ const Results: React.FC<ResultsProps> = memo( ( {
 } );
 
 const Home: NextPage = () => {
-	const [ userCard, setUserCard ] = useState<UserCard>( CardTier.Ruby );
-	const [ userPerks, setUserPerks ] = useState<UserPerks>( new Set() );
-	const [ userCardStake, setUserCardStake ] = useState<UserCardStake>( 40000 );
-	const [ userMonthlySpend, setUserMonthlySpend ] = useState<UserMonthlySpend>( 100 );
-	const [ croUsd, setCroUsd ] = useState<CroUSD>( 0.14 );
-	const [ perkUSDValues, setPerkUSDValues ] = useState( new Map( Object.values( perks ).map( perk => [ perk.id, perk.value ] ) ) );
-	const [ userCurrency, setUserCurrency ] = useState<UserCurrency>( 'USD' );
 	const [ cdcOrgStakingAPR, setCdcOrgStakingAPR ] = useState<CdcOrgStakingAPR>( 0.11 );
+	const [ croUsd, setCroUsd ] = useState<CroUSD>( 0.14 );
 	const [ isSettingsModalOpen, setIsSettingsModalOpen ] = useState( false );
+	const [ perkUSDValues, setPerkUSDValues ] = useState<Map<PerkType, number|string>>( new Map( Object.values( perks ).map( perk => [ perk.id, perk.value ] ) ) );
+	const [ userCard, setUserCard ] = useState<UserCard>( CardTier.Ruby );
+	const [ userCardStake, setUserCardStake ] = useState<UserCardStake>( 40000 );
+	const [ userCurrency, setUserCurrency ] = useState<UserCurrency>( 'USD' );
+	const [ userCurrencyConversionRate, setUserCurrencyConversionRate ] = useState<UserCurrencyConversion>( 1 );
+	const [ userMonthlySpend, setUserMonthlySpend ] = useState<UserMonthlySpend>( 100 );
+	const [ userPerks, setUserPerks ] = useState<UserPerks>( new Set() );
 
 	const handleUserCardStakeChange: FormControlProps['onChange'] = e => {
 		const newUserCardStake = e.currentTarget.value;
@@ -501,6 +511,37 @@ const Home: NextPage = () => {
 		}
 	};
 
+	const handleCroUsdChange: FormControlProps['onChange'] = e => {
+		const newCroUsd = e.currentTarget.value;
+		setCroUsd( newCroUsd === '' ? newCroUsd : Number( newCroUsd ) );
+	};
+
+	const handleCdcOrgStakingAPRChange: FormControlProps['onChange'] = e => {
+		const newCdcOrgStakingAPR = e.currentTarget.value;
+		setCdcOrgStakingAPR( newCdcOrgStakingAPR === '' ? newCdcOrgStakingAPR : Number( newCdcOrgStakingAPR ) / 100 );
+	};
+
+	const handleUserCurrencyChange: ChangeEventHandler<HTMLSelectElement> = e => {
+		const newUserCurrency = e.currentTarget.value as UserCurrency;
+		setUserCurrency( newUserCurrency );
+		setUserCurrencyConversionRate( currencyConversions[ newUserCurrency ] );
+	};
+
+	const handleUserCurrencyConversionRateChange: FormControlProps['onChange'] = e => {
+		const newUserCurrencyConversionRateChange = e.currentTarget.value;
+		setUserCurrencyConversionRate( newUserCurrencyConversionRateChange === '' ? newUserCurrencyConversionRateChange : Number( newUserCurrencyConversionRateChange ) );
+	};
+
+	const createPerkValueChangeHandler = ( perkType: PerkType ) => {
+		const handler: FormControlProps['onChange'] = e => {
+			const newPerkValue = e.currentTarget.value === '' ? e.currentTarget.value : Number( e.currentTarget.value );
+			const newPerkValues = new Map( perkUSDValues ).set( perkType, ( newPerkValue ) );
+			setPerkUSDValues( newPerkValues );
+		};
+
+		return handler;
+	};
+
 	return (
 		<>
 			<Head>
@@ -514,11 +555,62 @@ const Home: NextPage = () => {
 				<meta content="#da532c" name="msapplication-TileColor" />
 				<meta content="#ffffff" name="theme-color" />
 			</Head>
-			<Modal onHide={ () => setIsSettingsModalOpen( false ) } show={ isSettingsModalOpen }>
+			<Modal className="settings-modal" onHide={ () => setIsSettingsModalOpen( false ) } show={ isSettingsModalOpen }>
 				<Modal.Header closeButton>
 					<Modal.Title>Settings</Modal.Title>
 				</Modal.Header>
-				<Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
+				<Modal.Body>
+					<Form.Group className="form-group row" controlId="cro-usd">
+						<div className="col-9">
+							<Form.Label>CRO USD</Form.Label>
+							<Form.Text className="text-muted">
+								USD value of 1 CRO.
+							</Form.Text>
+						</div>
+						<div className="col-3">
+							<Form.Control onChange={ handleCroUsdChange } pattern="\d+" required type="number" value={ croUsd } />
+						</div>
+					</Form.Group>
+					<Form.Group className="form-group row" controlId="cdc-org-staking-apr">
+						<div className="col-9">
+							<Form.Label>Crypto.org Staking APR</Form.Label>
+							<Form.Text className="text-muted">
+								Crypto.org chain staking APR.
+							</Form.Text>
+						</div>
+						<div className="col-3">
+							<Form.Control onChange={ handleCdcOrgStakingAPRChange } pattern="\d+" required type="number" value={ ( cdcOrgStakingAPR || 0 ) * 100 } />
+						</div>
+					</Form.Group>
+					{ userCurrency !== 'USD' && (
+						<Form.Group className="form-group row" controlId="user-currency-conversion-rate">
+							<div className="col-9">
+								<Form.Label>USD/{ userCurrency } Rate</Form.Label>
+								<Form.Text className="text-muted">
+									US$1 in your local currency.
+								</Form.Text>
+							</div>
+							<div className="col-3">
+								<Form.Control onChange={ handleUserCurrencyConversionRateChange } pattern="\d+" required type="number" value={ userCurrencyConversionRate } />
+							</div>
+						</Form.Group>
+					) }
+					{ Array.from( perkUSDValues ).map( ( [ perkType, perkValueUsd ] ) => {
+						return (
+							<Form.Group className="form-group row" controlId={ `perk-${ perkType }-value` } key={ perkType }>
+								<div className="col-9">
+									<Form.Label>{ perks[ perkType ].name } USD Value</Form.Label>
+									<Form.Text className="text-muted">
+										Monthly USD value of { perks[ perkType ].name }.
+									</Form.Text>
+								</div>
+								<div className="col-3">
+									<Form.Control onChange={ createPerkValueChangeHandler( perkType ) } pattern="\d+" required type="number" value={ perkValueUsd } />
+								</div>
+							</Form.Group>
+						);
+					} ) }
+				</Modal.Body>
 			</Modal>
 			<div className="App">
 				<Navbar bg="dark" expand="lg" fixed="top" variant="dark">
@@ -568,7 +660,7 @@ const Home: NextPage = () => {
 							{ Object.values( perks ).map( perk => (
 								<ToggleButton className={ `perk-${ perk.id }` } disabled={ ! cards[ userCard ].perks.includes( perk.id ) } id={ `perk-${ perk.id }` } key={ perk.id } value={ perk.id } variant="card">
 									{ perk.name }<br />
-									<small className="mt-1">{ `$${ perkUSDValues.get( perk.id ) } USD p/ month` }</small>
+									<small className="mt-1">{ `$${ perkUSDValues.get( perk.id ) || 0 } USD p/month` }</small>
 								</ToggleButton>
 							) ) }
 						</ToggleButtonGroup>
@@ -577,7 +669,7 @@ const Home: NextPage = () => {
 						<Form.Label>Your monthly spend</Form.Label>
 						<InputGroup>
 							<Form.Control onChange={ handleUserMonthlySpendChange } pattern="\d+" required size="lg" type="number" value={ userMonthlySpend } />
-							<Form.Select aria-label="Select your local currency" className="user-currency" onChange={ ( e: React.FormEvent<HTMLSelectElement> ) => setUserCurrency( e.currentTarget.value as UserCurrency ) } value={ userCurrency }>
+							<Form.Select aria-label="Select your local currency" className="user-currency" onChange={ handleUserCurrencyChange } value={ userCurrency }>
 								{ currencyCodes.map( currency => (
 									<option key={ currency } value={ currency }>{ currency }</option>
 								) ) }
@@ -587,7 +679,7 @@ const Home: NextPage = () => {
 							Select your local currency, e.g. USD.
 						</Form.Text>
 					</Form.Group>
-					<Results { ...{ userCard, userMonthlySpend, croUsd, userPerks, userCardStake, userCurrency, cdcOrgStakingAPR } } />
+					<Results { ...{ userCard, userMonthlySpend, croUsd, userPerks, userCardStake, userCurrency, cdcOrgStakingAPR, userCurrencyConversionRate, perkUSDValues } } />
 				</Container>
 				<footer className="bg-dark text-center text-white">
 					<Container className="disclaimer" fluid>

@@ -231,10 +231,16 @@ input[type="number"]::-webkit-outer-spin-button {
 	white-space: nowrap;
 	box-shadow: 0 0 9px 1px rgb( 0 0 0 / 10% );
 
+	th,
+	td {
+		vertical-align: top;
+	}
+
 	> :not( caption ) > * > * {
 		padding: 10px;
 	}
 
+	thead th:first-child,
 	tbody th {
 		text-align: left;
 		white-space: normal;
@@ -273,5 +279,24 @@ footer {
 		background-color: rgba( 0, 0, 0, 0.3 );
 		padding-top: 20px;
 		padding-bottom: 20px;
+	}
+}
+
+.settings-modal {
+
+	.form-group {
+		margin-bottom: 25px;
+	}
+
+	label {
+		margin-bottom: 2px;
+	}
+
+	input {
+		text-align: right;
+	}
+
+	small {
+		margin: 0;
 	}
 }
