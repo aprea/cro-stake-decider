@@ -254,7 +254,7 @@ const Results: React.FC<ResultsProps> = memo( ( {
 			<Table className="results-table">
 				<thead>
 					<tr>
-						<th>Card benefits</th>
+						<th>Card Benefits</th>
 						<th>
 							Per Month
 							<small>{ userCurrency }</small>
