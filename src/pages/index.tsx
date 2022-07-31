@@ -626,7 +626,7 @@ const Home: NextPage = () => {
 							</Form.Text>
 						</div>
 						<div className="col-3">
-							<Form.Control onChange={ handleCdcOrgStakingAPRChange } pattern="\d+" required type="number" value={ ( cdcOrgStakingAPR || 0 ) * 100 } />
+							<Form.Control onChange={ handleCdcOrgStakingAPRChange } pattern="\d+" required type="number" value={ typeof cdcOrgStakingAPR !== 'number' ? cdcOrgStakingAPR : Number( ( ( cdcOrgStakingAPR || 0 ) * 100 ).toFixed( 4 ) ) } />
 						</div>
 					</Form.Group>
 					{ userCurrency !== 'USD' && (
