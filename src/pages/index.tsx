@@ -469,8 +469,9 @@ const Results: React.FC<ResultsProps> = memo( ( {
 } );
 
 const Home: NextPage = () => {
-	const [ cdcOrgStakingAPR, setCdcOrgStakingAPR ] = useState<CdcOrgStakingAPR>( 0.11 );
+	const [ cdcOrgStakingAPR, setCdcOrgStakingAPR ] = useState<CdcOrgStakingAPR>( 0.115 );
 	const [ croUsd, setCroUsd ] = useState<CroUSD>( 0.14 );
+	const [ isHelpModalOpen, setIsHelpModalOpen ] = useState( false );
 	const [ isSettingsModalOpen, setIsSettingsModalOpen ] = useState( false );
 	const [ perkUSDValues, setPerkUSDValues ] = useState<Map<PerkType, number|string>>( new Map( Object.values( perks ).map( perk => [ perk.id, perk.value ] ) ) );
 	const [ userCard, setUserCard ] = useState<UserCard>( CardTier.Ruby );
@@ -485,6 +486,16 @@ const Home: NextPage = () => {
 		const locale = navigator.language || 'en-US';
 		setUserLocale( locale );
 	}, [ userLocale ] );
+
+	useEffect( () => {
+		document.addEventListener( 'wheel', () => {
+			const activeElement = document.activeElement as HTMLInputElement;
+
+			if ( activeElement?.type === 'number' ) {
+				activeElement.blur();
+			}
+		} );
+	}, [] );
 
 	const handleUserCardStakeChange: FormControlProps['onChange'] = e => {
 		const newUserCardStake = e.currentTarget.value;
@@ -547,15 +558,43 @@ const Home: NextPage = () => {
 		<>
 			<Head>
 				<title>CRO Stake Decider</title>
-				<meta content="CRO Stake Decider helps decide where to stake your CRO, either in the crypto.com app or crypto.org DeFi staking." name="description" />
-				<link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
-				<link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
-				<link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
-				<link href="/site.webmanifest" rel="manifest" />
-				<link color="#5bbad5" href="/safari-pinned-tab.svg" rel="mask-icon" />
-				<meta content="#da532c" name="msapplication-TileColor" />
-				<meta content="#ffffff" name="theme-color" />
+				<meta content="CRO Stake Decider helps you decide where to stake your CRO, either in the crypto.com app or crypto.org DeFi staking." name="description" />
+				<link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+				<link href="/favicon.png" rel="icon" type="image/png" />
 			</Head>
+			<Modal className="help-modal" onHide={ () => setIsHelpModalOpen( false ) } show={ isHelpModalOpen }>
+				<Modal.Header closeButton>
+					<Modal.Title>FAQs</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<h5>What is this?</h5>
+					<p>This website compares the rewards and benefits of an active Crypto.com card stake compared to Crypto.org chain DeFi staking.</p>
+
+					<h5>Who is this website for?</h5>
+					<p>This website is for Crypto.com users with an <strong>unlocked card stake</strong> who want to compare the value of their card benefits against the potential returns of staking their CRO via the Crypto.org chain.</p>
+
+					<h5>How do I use this website?</h5>
+					<p>Follow these four simple steps:</p>
+					<ol>
+						<li>Select your current Crypto.com card (e.g. Ruby, Jade Green, Icy White, etc.</li>
+						<li>Enter the total amount of CRO staked for your card (can be found in the Crypto.com app).</li>
+						<li>Select the services you use. Only select services that are linked to your Crypto.com card.</li>
+						<li>Enter the amount you spend per month on your Crypto.com card. Make sure to select your local currency.</li>
+					</ol>
+
+					<p>Once you have entered all of your information, you will see the results in the results section.</p>
+
+					<h5>Is this website safe to use?</h5>
+					<p>Put simply, yes. This website doesn&apos;t store any data. We do not send your data to a backend server. The code is fully open source (you can check the <a href="https://github.com/aprea/cro-stake-decider">GitHub repo</a>). This website doesn&apos;t use cookies or track analytics data.</p>
+
+					<p>You can even use this website in airplane/offline mode, all the calculations take place locally in your browser.</p>
+
+					<h5>Some of the values look incorrect</h5>
+					<p>This is because the calculations are based on hardcoded values, e.g. CRO USD price, Crypto.org Staking APR, currency pair rates, etc.</p>
+
+					<p>You can adjust these values yourself by clicking the setting button (cog icon).</p>
+				</Modal.Body>
+			</Modal>
 			<Modal className="settings-modal" onHide={ () => setIsSettingsModalOpen( false ) } show={ isSettingsModalOpen }>
 				<Modal.Header closeButton>
 					<Modal.Title>Settings</Modal.Title>
@@ -617,10 +656,18 @@ const Home: NextPage = () => {
 				<Navbar bg="dark" expand="lg" fixed="top" variant="dark">
 					<Container fluid>
 						<Navbar.Brand>
-							<svg viewBox="0 0 32 37" xmlns="http://www.w3.org/2000/svg"><path d="M22.129 29.168H19.87l-2.702-2.454v-1.259l2.798-2.643v-4.185l3.656-2.36 4.165 3.116-5.66 9.785zm-9.348-6.607.414-3.934-1.368-3.524h8.076l-1.335 3.524.381 3.934h-6.168zm1.844 4.153L11.923 29.2h-2.29l-5.69-9.817 4.196-3.084 3.688 2.328v4.185l2.798 2.643v1.259zM9.602 7.834h12.495l1.494 6.294H8.14l1.463-6.293zM15.865 0 0 9.062v18.124l15.865 9.062 15.865-9.062V9.062L15.865 0z" fill="#fff" /></svg>
+							<svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+								<path d="M12.036.3L1.8 6.199v11.797l10.236 5.9 10.236-5.9V6.2L12.036.3zm7.2 15.962l-7.2 4.134-7.2-4.134V7.934l7.2-4.135 7.2 4.164v8.299z" fill="#fff" />
+								<path d="M16.807 14.845l-4.77 2.775-4.772-2.775V9.35l4.771-2.776 4.771 2.776v5.494z" fill="#fff" />
+							</svg>
 							CRO Stake Decider
 						</Navbar.Brand>
-						<div className="d-flex">
+						<div className="d-flex navbar-buttons">
+							<Button aria-label="Help" onClick={ () => setIsHelpModalOpen( true ) } variant="link">
+								<svg className="bi bi-info-circle-fill" fill="#fff" viewBox="0 0 16 16" width="24" xmlns="http://www.w3.org/2000/svg">
+									<path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+								</svg>
+							</Button>
 							<Button aria-label="Settings" onClick={ () => setIsSettingsModalOpen( true ) } variant="link">
 								<svg fill="#fff" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
 									<path d="M22.2 14.4l-1.2-.7a2.06 2.06 0 010-3.5l1.2-.7c1-.6 1.3-1.8.7-2.7l-1-1.7c-.6-1-1.8-1.3-2.7-.7l-1.2.7c-1.3.8-3-.2-3-1.7V2c0-1.1-.9-2-2-2h-2C9.9 0 9 .9 9 2v1.3C9 4.8 7.3 5.8 6 5l-1.2-.6a1.94 1.94 0 00-2.7.7l-1 1.7c-.5 1-.2 2.2.7 2.8l1.2.7c1.3.7 1.3 2.7 0 3.4l-1.2.7c-1 .6-1.3 1.8-.7 2.7l1 1.7c.6 1 1.8 1.3 2.7.7l1.2-.6c1.3-.8 3 .2 3 1.7V22c0 1.1.9 2 2 2h2c1.1 0 2-.9 2-2v-1.3c0-1.5 1.7-2.5 3-1.7l1.2.7a1.94 1.94 0 002.7-.7l1-1.7c.5-1.1.2-2.3-.7-2.9zM12 16c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z" />
@@ -692,12 +739,21 @@ const Home: NextPage = () => {
 					<div>
 						<Container className="logo-links" fluid>
 							<Navbar.Brand>
-								<svg viewBox="0 0 32 37" xmlns="http://www.w3.org/2000/svg"><path d="M22.129 29.168H19.87l-2.702-2.454v-1.259l2.798-2.643v-4.185l3.656-2.36 4.165 3.116-5.66 9.785zm-9.348-6.607.414-3.934-1.368-3.524h8.076l-1.335 3.524.381 3.934h-6.168zm1.844 4.153L11.923 29.2h-2.29l-5.69-9.817 4.196-3.084 3.688 2.328v4.185l2.798 2.643v1.259zM9.602 7.834h12.495l1.494 6.294H8.14l1.463-6.293zM15.865 0 0 9.062v18.124l15.865 9.062 15.865-9.062V9.062L15.865 0z" fill="#fff" /></svg>
+								<svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+									<path d="M12.036.3L1.8 6.199v11.797l10.236 5.9 10.236-5.9V6.2L12.036.3zm7.2 15.962l-7.2 4.134-7.2-4.134V7.934l7.2-4.135 7.2 4.164v8.299z" fill="#fff" />
+									<path d="M16.807 14.845l-4.77 2.775-4.772-2.775V9.35l4.771-2.776 4.771 2.776v5.494z" fill="#fff" />
+								</svg>
 								CRO Stake Decider
 							</Navbar.Brand>
 							<div className="links">
+								<a href="https://twitter.com/chrisaprea">
+									<span className="visually-hidden">@chrisaprea on Twitter</span>
+									<svg className="bi bi-twitter" fill="currentColor" viewBox="0 0 16 16" width="24" xmlns="http://www.w3.org/2000/svg">
+										<path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z" />
+									</svg>
+								</a>
 								<a href="https://github.com/aprea/cro-stake-decider">
-									<span className="visually-hidden">GitHub</span>
+									<span className="visually-hidden">Visit the project on GitHub</span>
 									<svg className="bi bi-github" fill="currentColor" viewBox="0 0 16 16" width="24" xmlns="http://www.w3.org/2000/svg">
 										<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
 									</svg>
