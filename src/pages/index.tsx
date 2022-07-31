@@ -584,6 +584,13 @@ const Home: NextPage = () => {
 
 					<p>Once you have entered all of your information, you will see the results in the results section.</p>
 
+					<h5>What is the Crypto.org chain?</h5>
+					<p>Crypto.org Chain is a public, open-source and permissionless blockchain - a fully decentralized network with high speed and low fees, designed to be a public good that helps drive mass adoption of blockchain technology through use cases like Payments, DeFi and NFTs.</p>
+
+					<h5>What is Crypto.org chain staking?</h5>
+					<p>Crypto.org chain users can delegate their native CRO tokens to a trusted Validator. Validators run nodes to validate transactions on the Crypto.org Chain network and in return earn block rewards in CRO, which are then distributed to the Delegators after taking a Validator commission.</p>
+					<p><a href="https://help.crypto.com/en/articles/5015391-all-about-crypto-org-chain-cro-staking-on-defi-earn">Read more here</a>.</p>
+
 					<h5>Is this website safe to use?</h5>
 					<p>Put simply, yes. This website doesn&apos;t store any data. We do not send your data to a backend server. The code is fully open source (you can check the <a href="https://github.com/aprea/cro-stake-decider">GitHub repo</a>). This website doesn&apos;t use cookies or track analytics data.</p>
 
@@ -592,7 +599,7 @@ const Home: NextPage = () => {
 					<h5>Some of the values look incorrect</h5>
 					<p>This is because the calculations are based on hardcoded values, e.g. CRO USD price, Crypto.org Staking APR, currency pair rates, etc.</p>
 
-					<p>You can adjust these values yourself by clicking the setting button (cog icon).</p>
+					<p>You can adjust these values yourself by clicking the setting button (cog icon) located in the navigation bar.</p>
 				</Modal.Body>
 			</Modal>
 			<Modal className="settings-modal" onHide={ () => setIsSettingsModalOpen( false ) } show={ isSettingsModalOpen }>
@@ -660,7 +667,7 @@ const Home: NextPage = () => {
 								<path d="M12.036.3L1.8 6.199v11.797l10.236 5.9 10.236-5.9V6.2L12.036.3zm7.2 15.962l-7.2 4.134-7.2-4.134V7.934l7.2-4.135 7.2 4.164v8.299z" fill="#fff" />
 								<path d="M16.807 14.845l-4.77 2.775-4.772-2.775V9.35l4.771-2.776 4.771 2.776v5.494z" fill="#fff" />
 							</svg>
-							CRO Stake Decider
+							<h1>CRO Stake Decider</h1>
 						</Navbar.Brand>
 						<div className="d-flex navbar-buttons">
 							<Button aria-label="Help" onClick={ () => setIsHelpModalOpen( true ) } variant="link">
