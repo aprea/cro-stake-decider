@@ -615,12 +615,12 @@ const Home: NextPage = () => {
 			<div className="App">
 				<Navbar bg="dark" expand="lg" fixed="top" variant="dark">
 					<Container fluid>
-						<Navbar.Brand href="#home">
+						<Navbar.Brand>
 							<svg viewBox="0 0 32 37" xmlns="http://www.w3.org/2000/svg"><path d="M22.129 29.168H19.87l-2.702-2.454v-1.259l2.798-2.643v-4.185l3.656-2.36 4.165 3.116-5.66 9.785zm-9.348-6.607.414-3.934-1.368-3.524h8.076l-1.335 3.524.381 3.934h-6.168zm1.844 4.153L11.923 29.2h-2.29l-5.69-9.817 4.196-3.084 3.688 2.328v4.185l2.798 2.643v1.259zM9.602 7.834h12.495l1.494 6.294H8.14l1.463-6.293zM15.865 0 0 9.062v18.124l15.865 9.062 15.865-9.062V9.062L15.865 0z" fill="#fff" /></svg>
 							CRO Stake Decider
 						</Navbar.Brand>
 						<div className="d-flex">
-							<Button onClick={ () => setIsSettingsModalOpen( true ) } variant="link">
+							<Button aria-label="Settings" onClick={ () => setIsSettingsModalOpen( true ) } variant="link">
 								<svg fill="#fff" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
 									<path d="M22.2 14.4l-1.2-.7a2.06 2.06 0 010-3.5l1.2-.7c1-.6 1.3-1.8.7-2.7l-1-1.7c-.6-1-1.8-1.3-2.7-.7l-1.2.7c-1.3.8-3-.2-3-1.7V2c0-1.1-.9-2-2-2h-2C9.9 0 9 .9 9 2v1.3C9 4.8 7.3 5.8 6 5l-1.2-.6a1.94 1.94 0 00-2.7.7l-1 1.7c-.5 1-.2 2.2.7 2.8l1.2.7c1.3.7 1.3 2.7 0 3.4l-1.2.7c-1 .6-1.3 1.8-.7 2.7l1 1.7c.6 1 1.8 1.3 2.7.7l1.2-.6c1.3-.8 3 .2 3 1.7V22c0 1.1.9 2 2 2h2c1.1 0 2-.9 2-2v-1.3c0-1.5 1.7-2.5 3-1.7l1.2.7a1.94 1.94 0 002.7-.7l1-1.7c.5-1.1.2-2.3-.7-2.9zM12 16c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z" />
 								</svg>
@@ -682,10 +682,29 @@ const Home: NextPage = () => {
 					<Results { ...{ userCard, userMonthlySpend, croUsd, userPerks, userCardStake, userCurrency, cdcOrgStakingAPR, userCurrencyConversionRate, perkUSDValues } } />
 				</Container>
 				<footer className="bg-dark text-center text-white">
-					<Container className="disclaimer" fluid>
-						<p><strong>Disclaimer:</strong> Please use this website at your own risk. It is up to you to verify accuracy of the information presented on this website. While every effort has been made to ensure the accuracy and completeness of the information, no guarantee is given nor responsibility taken for errors or omissions in the information presented. In no event will we be liable for you or anyone else for any decision made or action taken in reliance on data from this website.</p>
-						<p>This website is provided for informational purposes only. It does not constitute financial, tax or legal advice. For financial or legal advice, please consult your own professional. It cannot guarantee lack of error. As such, we will not be liable for any loss or damage of any nature.</p>
-					</Container>
+					<div>
+						<Container className="logo-links" fluid>
+							<Navbar.Brand>
+								<svg viewBox="0 0 32 37" xmlns="http://www.w3.org/2000/svg"><path d="M22.129 29.168H19.87l-2.702-2.454v-1.259l2.798-2.643v-4.185l3.656-2.36 4.165 3.116-5.66 9.785zm-9.348-6.607.414-3.934-1.368-3.524h8.076l-1.335 3.524.381 3.934h-6.168zm1.844 4.153L11.923 29.2h-2.29l-5.69-9.817 4.196-3.084 3.688 2.328v4.185l2.798 2.643v1.259zM9.602 7.834h12.495l1.494 6.294H8.14l1.463-6.293zM15.865 0 0 9.062v18.124l15.865 9.062 15.865-9.062V9.062L15.865 0z" fill="#fff" /></svg>
+								CRO Stake Decider
+							</Navbar.Brand>
+							<div className="links">
+								<a href="https://github.com/aprea/cro-stake-decider">
+									<span className="visually-hidden">GitHub</span>
+									<svg className="bi bi-github" fill="currentColor" viewBox="0 0 16 16" width="24" xmlns="http://www.w3.org/2000/svg">
+										<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+									</svg>
+								</a>
+							</div>
+						</Container>
+						<Container fluid>
+							<hr />
+						</Container>
+						<Container className="disclaimer" fluid>
+							<p><strong>Disclaimer:</strong> Please use this website at your own risk. It is up to you to verify accuracy of the information presented on this website. While every effort has been made to ensure the accuracy and completeness of the information, no guarantee is given nor responsibility taken for errors or omissions in the information presented. In no event will we be liable for you or anyone else for any decision made or action taken in reliance on data from this website.</p>
+							<p>This website is provided for informational purposes only. It does not constitute financial, tax or legal advice. For financial or legal advice, please consult your own professional. It cannot guarantee lack of error. As such, we will not be liable for any loss or damage of any nature.</p>
+						</Container>
+					</div>
 					<div>
 						<small>&copy; { new Date().getFullYear() } CRO Stake Decider. All rights reserved.</small>
 					</div>

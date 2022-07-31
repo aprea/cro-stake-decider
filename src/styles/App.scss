@@ -266,16 +266,39 @@ footer {
 		font-size: 13px;
 	}
 
+	.logo-links {
+		display: flex;
+		text-align: left;
+		justify-content: space-between;
+	}
+
+	.links {
+
+		svg {
+			color: #fff;
+
+			&:hover,
+			&:active {
+				color: rgba( 255, 255, 255, 0.8 );
+			}
+		}
+	}
+
+	hr {
+		border-color: #999;
+		margin: 25px 0;
+	}
+
 	p:last-child {
 		margin: 0;
 	}
 
-	div:first-child {
+	> div:first-child {
 		padding-top: 35px;
 		padding-bottom: 35px;
 	}
 
-	div:last-child {
+	> div:last-child {
 		background-color: rgba( 0, 0, 0, 0.3 );
 		padding-top: 20px;
 		padding-bottom: 20px;
