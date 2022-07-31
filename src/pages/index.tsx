@@ -479,10 +479,10 @@ const Home: NextPage = () => {
 	const [ isSettingsModalOpen, setIsSettingsModalOpen ] = useState( false );
 	const [ perkUSDValues, setPerkUSDValues ] = useState<Map<PerkType, number|string>>( new Map( Object.values( perks ).map( perk => [ perk.id, perk.value ] ) ) );
 	const [ userCard, setUserCard ] = useState<UserCard>( CardTier.Ruby );
-	const [ userCardStake, setUserCardStake ] = useState<UserCardStake>( 40000 );
+	const [ userCardStake, setUserCardStake ] = useState<UserCardStake>();
 	const [ userCurrency, setUserCurrency ] = useState<UserCurrency>( 'USD' );
 	const [ userCurrencyConversionRate, setUserCurrencyConversionRate ] = useState<UserCurrencyConversion>( 1 );
-	const [ userMonthlySpend, setUserMonthlySpend ] = useState<UserMonthlySpend>( 100 );
+	const [ userMonthlySpend, setUserMonthlySpend ] = useState<UserMonthlySpend>();
 	const [ userPerks, setUserPerks ] = useState<UserPerks>( new Set() );
 
 	const handleUserCardStakeChange: FormControlProps['onChange'] = e => {
