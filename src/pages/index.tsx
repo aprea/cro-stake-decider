@@ -773,10 +773,11 @@ const Home: NextPage = () => {
 						<Container className="disclaimer" fluid>
 							<p><strong>Disclaimer:</strong> Please use this website at your own risk. It is up to you to verify accuracy of the information presented on this website. While every effort has been made to ensure the accuracy and completeness of the information, no guarantee is given nor responsibility taken for errors or omissions in the information presented. In no event will we be liable for you or anyone else for any decision made or action taken in reliance on data from this website.</p>
 							<p>This website is provided for informational purposes only. It does not constitute financial, tax or legal advice. For financial or legal advice, please consult your own professional. It cannot guarantee lack of error. As such, we will not be liable for any loss or damage of any nature.</p>
+							<p>Crypto.com and its trademarks are copyright &copy; { new Date().getFullYear() } Crypto.com. This website is not produced by, endorsed by, supported by, or affiliated with Crypto.com.</p>
 						</Container>
 					</div>
 					<div>
-						<small>&copy; { new Date().getFullYear() } CRO Stake Decider. All rights reserved.</small>
+						<small>Copyright &copy; { new Date().getFullYear() } CRO Stake Decider. All rights reserved.</small>
 					</div>
 				</footer>
 			</div>
