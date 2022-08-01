@@ -576,7 +576,7 @@ const Home: NextPage = () => {
 					<h5>How do I use this website?</h5>
 					<p>Follow these four simple steps:</p>
 					<ol>
-						<li>Select your current Crypto.com card (e.g. Ruby, Jade Green, Icy White, etc.</li>
+						<li>Select your current Crypto.com card (e.g. Ruby, Jade Green, Icy White, etc.)</li>
 						<li>Enter the total amount of CRO staked for your card (can be found in the Crypto.com app).</li>
 						<li>Select the services you use. Only select services that are linked to your Crypto.com card.</li>
 						<li>Enter the amount you spend per month on your Crypto.com card. Make sure to select your local currency.</li>
@@ -599,7 +599,7 @@ const Home: NextPage = () => {
 					<h5>Some of the values look incorrect</h5>
 					<p>This is because the calculations are based on hardcoded values, e.g. CRO USD price, Crypto.org Staking APR, currency pair rates, etc.</p>
 
-					<p>You can adjust these values yourself by clicking the setting button (cog icon) located in the navigation bar.</p>
+					<p>You can adjust these values yourself by clicking the settings button (cog icon) located in the navigation bar.</p>
 				</Modal.Body>
 			</Modal>
 			<Modal className="settings-modal" onHide={ () => setIsSettingsModalOpen( false ) } show={ isSettingsModalOpen }>
