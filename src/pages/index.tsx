@@ -164,7 +164,6 @@ type ResultsProps = {
 	userCardStake: UserCardStake;
 	userCurrency: UserCurrency;
 	userCurrencyConversionRate: UserCurrencyConversion;
-	userLocale: string;
 	userMonthlySpend: UserMonthlySpend;
 	userPerks: UserPerks;
 };
@@ -177,7 +176,6 @@ const Results: React.FC<ResultsProps> = memo( ( {
 	userCardStake,
 	userCurrency,
 	userCurrencyConversionRate,
-	userLocale,
 	userMonthlySpend,
 	userPerks,
 } ) => {
@@ -187,9 +185,9 @@ const Results: React.FC<ResultsProps> = memo( ( {
 
 	const userMonthlySpendUSD = ( userMonthlySpend || 0 ) * ( 1 / userCurrencyConversionRate );
 
-	const currencyFormatter = new Intl.NumberFormat( userLocale, { style: 'currency', currency: userCurrency, currencyDisplay: 'narrowSymbol' } );
-	const currencyFormatterWithSymbol = new Intl.NumberFormat( userLocale, { style: 'currency', currency: userCurrency, currencyDisplay: 'symbol' } );
-	const numberFormatter = new Intl.NumberFormat( userLocale, { maximumFractionDigits: 0 } );
+	const currencyFormatter = new Intl.NumberFormat( undefined, { style: 'currency', currency: userCurrency, currencyDisplay: 'narrowSymbol' } );
+	const currencyFormatterWithSymbol = new Intl.NumberFormat( undefined, { style: 'currency', currency: userCurrency, currencyDisplay: 'symbol' } );
+	const numberFormatter = new Intl.NumberFormat( undefined, { maximumFractionDigits: 0 } );
 	let cashbackFiatPerMonth = ( userMonthlySpendUSD || 0 ) * cards[ userCard ].cashbackRate;
 	cashbackFiatPerMonth = cards[ userCard ].monthlyCap ? Math.min( cashbackFiatPerMonth, + cards[ userCard ].monthlyCap ) : cashbackFiatPerMonth;
 
@@ -480,12 +478,6 @@ const Home: NextPage = () => {
 	const [ userCurrencyConversionRate, setUserCurrencyConversionRate ] = useState<UserCurrencyConversion>( 1 );
 	const [ userMonthlySpend, setUserMonthlySpend ] = useState<UserMonthlySpend>( '' );
 	const [ userPerks, setUserPerks ] = useState<UserPerks>( new Set() );
-	const [ userLocale, setUserLocale ] = useState( 'en-US' );
-
-	useEffect( () => {
-		const locale = navigator.language || 'en-US';
-		setUserLocale( locale );
-	}, [ userLocale ] );
 
 	useEffect( () => {
 		document.addEventListener( 'wheel', () => {
@@ -735,12 +727,12 @@ const Home: NextPage = () => {
 							{ userCurrency !== 'USD' && (
 								<>
 									<br />
-									US$1 = { new Intl.NumberFormat( userLocale, { style: 'currency', currency: userCurrency, currencyDisplay: 'symbol' } ).format( Number( userCurrencyConversionRate ) ) }
+									US$1 = { new Intl.NumberFormat( undefined, { style: 'currency', currency: userCurrency, currencyDisplay: 'symbol' } ).format( Number( userCurrencyConversionRate ) ) }
 								</>
 							) }
 						</Form.Text>
 					</Form.Group>
-					<Results { ...{ userCard, userMonthlySpend, croUsd, userPerks, userCardStake, userCurrency, cdcOrgStakingAPR, userCurrencyConversionRate, perkUSDValues, userLocale } } />
+					<Results { ...{ userCard, userMonthlySpend, croUsd, userPerks, userCardStake, userCurrency, cdcOrgStakingAPR, userCurrencyConversionRate, perkUSDValues } } />
 				</Container>
 				<footer className="bg-dark text-center text-white">
 					<div>
